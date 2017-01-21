@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+	<meta charset="utf-8" />
+	<title>Socket.io</title>
+  </head>
+
+  <body>
+	<h1>Communicating with socket .io!</h1>
+
+	<p><input type="button" value="Poke the server" id="poke" onclick="poke()" /></p>
+	<script src="/socket.io/socket.io.js"></script>
+	
+	<script src="jquery.js"></script>
+<script>
+      var socket = io('http://192.168.43.1:8080');
+      socket.on('message', function(message) {
+           alert(message);
+      });
+	  function poke()
+	  {
+	      socket.emit('tst', "testing");
+	  }
+</script>
+  </body>
+</html>
