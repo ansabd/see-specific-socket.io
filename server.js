@@ -1,29 +1,25 @@
-var http = require('http');
-var fs = require('fs');
-
-// Loading the index file . html displayed to the client
-var server = http.createServer(function(req, res) {
-    fs.readFile('./index.html', 'utf-8', function(error, content) {
-        res.writeHead(200, {"Content-Type": "text/html"});
-        res.end(content);
-    });
+var app = require('express')();
+var http = require('http').Server(app);
+var io = require('socket.io')(http);
+app.get('/', function(req, res){
+	res.sendFile(__dirname + '/index.html');
 });
-
-// Loading socket.io
-var io = require('socket.io').listen(server);
-var c=1;
-// When a client connects, we note it in the console
-io.sockets.on('connection', function (socket) {
-	console.log("user connected %s",c);
-	c++;
-	socket.emit('message', 'You are connected!');
-
-    // When the server receives a “message” type signal from the client   
-    socket.on('tst', function (message) {
-    console.log("%s",message);
-	
-}); 
+var users = [];
+var c=0;
+io.on('connection', function(socket){
+	socket.on("user", function (data){
+		console.log(data+" Connected");
+	});
+	socket.on('msg', function(data){
+		var username = data.username;
+		var msg = data.value;
+		console.log(username+": "+msg);
+		io.emit("msg", {
+			user :  username,
+			msg : msg
+		});
+	});
 });
-server.listen(8080);
-console.log("Server Running on 8080");
-
+http.listen(3000, function(){
+console.log('listening on *:3000');
+});

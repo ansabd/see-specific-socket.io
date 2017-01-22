@@ -1,7 +1,7 @@
 var io = require('socket.io')(3000);
 console.log('listening on *:3000');
 io.on('connection', function(socket){
-	io.emit('flag');
+	io.emit('con', '1');
 	socket.on("device", function(data)
 	{
  		console.log("User Online ("+data+")\n");

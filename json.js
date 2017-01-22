@@ -1,19 +1,22 @@
-var http = require('http');
-var options = {
-  host: 'ultimatefun.comli.com',
-  port: 80,
-  path: '/submit',
-  method: 'POST'
-};
+var net = require('net');
 
-var req = http.request(options, function(res) {
-  res.setEncoding('utf8');
-  res.on('connection', function (chunk) {
-    console.log('Connected');
-  });
+var chatServer = net.createServer(),
+clientList = [];
+
+chatServer.on('connection', function(client) {
+client.write('Hi!\n');
+
+clientList.push(client);
+
+client.on('data', function(data) {
+for(var i=0;i<clientList.length;i+=1) {
+//write this data to all clients
+if ( client != clientList[i] )
+clientList[i].write(data);
+}
 });
 
-req.write("my data");
-req.write("more of my data");
+});
 
-req.end();
+chatServer.listen(9000);
+console.log("Listining on 9000");
